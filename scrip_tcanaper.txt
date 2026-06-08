@@ -1,0 +1,94 @@
+library(canaper)
+library(ape)
+library(stringr)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(ggpath)
+#install.packages("purrr")
+library(purrr)
+#install.packages("tidyr")
+library(tidyr)
+
+#CANAPE SOUTH AMERICA
+# Import data from a CSV file.
+comm <- read.csv('PRESABS.csv')
+tree <- read.tree('3167_Neotrop_Freshwater_Fish_spp_time_tree.tre')
+
+# Organize community data
+rownames(comm) <- comm[,1]
+comm <- na.omit(comm[,-1])
+comm <- comm[,colSums(comm) > 0]
+comm <- comm[rowSums(comm) > 0,]
+
+# Organize phylogeny data
+tree <- tree[[6]]
+tip_names <- str_split(tree$tip.label, '_', n=2, simplify = T)[,2]
+tree$tip.label <- tip_names
+
+# Generate CANAPE Analysis
+rand_test_results <- cpr_rand_test(comm, tree, null_model = "c0",n_reps = 100000)
+canape_results <- cpr_classify_endem(rand_test_results)
+canape_results[, "endem_type", drop = FALSE]
+write.csv(canape_results, "C:/script_canaper/analisys_canape/canape_as.csv",
+          row.names = FALSE)
+############################################################################################
+
+#COMPLEX AMAZONAS
+
+# Import data from a CSV file.
+comm <- read.csv('PRESABS.csv')
+HYBAS_CA <- read.csv('HYBAS_CA.csv')
+comm <- comm %>% 
+  semi_join(HYBAS_CA, by = c("HYBAS_ID" = "HYBAS_ID_2"))
+tree <- read.tree('3167_Neotrop_Freshwater_Fish_spp_time_tree.tre')
+
+# Organize community data
+rownames(comm) <- comm[,1]
+comm <- na.omit(comm[,-1])
+comm <- comm[,colSums(comm) > 0]
+comm <- comm[rowSums(comm) > 0,]
+
+# Organize phylogeny data
+tree <- tree[[6]]
+tip_names <- str_split(tree$tip.label, '_', n=2, simplify = T)[,2]
+tree$tip.label <- tip_names
+
+# Generate CANAPE Analysis
+rand_test_results <- cpr_rand_test(comm, tree, null_model = "c0",n_reps = 100000)
+canape_results <- cpr_classify_endem(rand_test_results)
+canape_results[, "endem_type", drop = FALSE]
+write.csv(canape_results, "C:/script_canaper/analisys_canape/canape_CA.csv",
+          row.names = FALSE)
+
+############################################################################################
+
+#LA PLATA
+
+# Import data from a CSV file.
+comm <- read.csv('PRESABS.csv')
+HYBAS_LP <- read.csv('HYBAS_LP.csv')
+comm <- comm %>% 
+  semi_join(HYBAS_LP, by = c("HYBAS_ID" = "HYBAS_ID_2"))
+tree <- read.tree('3167_Neotrop_Freshwater_Fish_spp_time_tree.tre')
+
+# Organize community data
+rownames(comm) <- comm[,1]
+comm <- na.omit(comm[,-1])
+comm <- comm[,colSums(comm) > 0]
+comm <- comm[rowSums(comm) > 0,]
+
+# Organize phylogeny data
+tree <- tree[[6]]
+tip_names <- str_split(tree$tip.label, '_', n=2, simplify = T)[,2]
+tree$tip.label <- tip_names
+
+# Generate CANAPE Analysis
+rand_test_results <- cpr_rand_test(comm, tree, null_model = "c0",n_reps = 100000)
+canape_results <- cpr_classify_endem(rand_test_results)
+canape_results[, "endem_type", drop = FALSE]
+write.csv(canape_results, "C:/script_canaper/analisys_canape/canape_LP.csv",
+          row.names = FALSE)
+
+
+

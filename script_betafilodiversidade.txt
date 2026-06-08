@@ -1,0 +1,116 @@
+#################### SOUTH AMERICA  ######################################
+
+# 1. Load the presence/absence data
+comm <- read.csv("PRESABS.csv")  
+
+
+# 2. Load the phylogenetic tree
+tree <- read.tree("3167_Neotrop_Freshwater_Fish_spp_time_tree.tre")
+
+# 3.Organize community data
+rownames(comm) <- comm[,1]
+comm <- na.omit(comm[,-1])
+comm <- comm[,colSums(comm) > 0]
+comm <- comm[rowSums(comm) > 0,]
+
+presabs <- as.matrix(comm)  
+
+# 4.Organize phylogeny data
+tree <- tree[[6]]
+tip_names <- str_split(tree$tip.label, '_', n=2, simplify = T)[,2]
+tree$tip.label <- tip_names
+
+tree <- multi2di(tree)
+
+# 5. Execute the PhyloSor analysis
+phylosor_result <- phylosor(presabs, tree)
+
+# 6. View the results
+print("Matriz de dissimilaridade filogenética (phylosor):")
+print(phylosor_result)
+
+# 7. Export the results
+write.csv(as.matrix(phylosor_result), "phylosor_AS.csv")
+
+
+#################### complexo amazonas######################################
+
+# 1. Load the presence/absence data
+comm <- read.csv("PRESABS.csv")
+
+
+# 2. Load the phylogenetic tree
+tree <- read.tree("3167_Neotrop_Freshwater_Fish_spp_time_tree.tre")
+
+HYBAS_CA <- read.csv("HYBAS_CA.csv")
+comm <- comm %>%
+  filter(HYBAS_ID %in% HYBAS_CA$HYBAS_ID_2)
+
+
+# 3. Organize community data
+rownames(comm) <- comm[,1]
+comm <- na.omit(comm[,-1])
+comm <- comm[,colSums(comm) > 0]
+comm <- comm[rowSums(comm) > 0,]
+
+presabs <- as.matrix(comm)  
+
+# 4. Organize phylogeny data
+tree <- tree[[6]]
+tip_names <- str_split(tree$tip.label, '_', n=2, simplify = T)[,2]
+tree$tip.label <- tip_names
+
+tree <- multi2di(tree)
+
+# 5. Execute the PhyloSor analysis
+phylosor_result <- phylosor(presabs, tree)
+
+# 6. View the results
+print("Matriz de dissimilaridade filogenética (phylosor):")
+print(phylosor_result)
+
+# 7. View the results
+write.csv(as.matrix(phylosor_result), "phylosor_complexoamazonas.csv")
+         
+betaamazonia <- read.csv("phylosor_complexoamazonas.csv")
+
+#################### La plata ######################################
+
+# 1. Load the presence/absence data
+comm <- read.csv("PRESABS.csv")  
+
+# 2. Load the phylogenetic tree
+tree <- read.tree("3167_Neotrop_Freshwater_Fish_spp_time_tree.tre")
+
+HYBAS_LP <- read.csv("HYBAS_LP.csv")
+comm <- comm %>%
+  filter(HYBAS_ID %in% HYBAS_LP$HYBAS_ID_2)
+
+# 3. Organize community data
+rownames(comm) <- comm[,1]
+comm <- na.omit(comm[,-1])
+comm <- comm[,colSums(comm) > 0]
+comm <- comm[rowSums(comm) > 0,]
+
+presabs <- as.matrix(comm)  
+
+# 4. Organize phylogeny data
+tree <- tree[[6]]
+tip_names <- str_split(tree$tip.label, '_', n=2, simplify = T)[,2]
+tree$tip.label <- tip_names
+
+tree <- multi2di(tree)
+
+# 5. Execute the PhyloSor analysis
+phylosor_result <- phylosor(presabs, tree)
+
+# 6. View the results
+print("Matriz de dissimilaridade filogenética (phylosor):")
+print(phylosor_result)
+
+# 7. View the results
+write.csv(as.matrix(phylosor_result), "phylosor_laplata.csv")
+
+betalaplata <- read.csv("phylosor_laplata.csv")
+
+
